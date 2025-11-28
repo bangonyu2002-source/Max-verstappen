@@ -1,90 +1,58 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import type { Website } from './types';
-import Header from './components/Header';
-import WebsiteList from './components/WebsiteList';
-import NavigationBar from './components/NavigationBar';
-import Footer from './components/Footer';
-import AddWebsiteModal from './components/AddWebsiteModal';
+// src/App.tsx
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Layout from './pages/Layout';
+import Homepage from './pages/Homepage';
+import MyPage from './pages/MyPage';
+import IframePage from './pages/IframePage';
+import SplashScreen from './components/SplashScreen';
+import F1MovieProfile from './pages/F1MovieProfile';
 
-const App: React.FC = () => {
-    const [websites, setWebsites] = useState<Website[]>([]);
-    const [selectedCategory, setSelectedCategory] = useState('전체');
-    const [isModalOpen, setIsModalOpen] = useState(false);
+function App() {
+  // 1. 스플래시 화면을 보여줄지 말지 결정하는 상태
+  const [showSplash, setShowSplash] = useState(true);
+  // 2. 스플래시 화면을 서서히 사라지게 할지 결정하는 상태
+  const [isFading, setIsFading] = useState(false);
 
-    useEffect(() => {
-        // 초기 목업 데이터 설정
-        const initialWebsites: Website[] = [
-            {
-                id: '1',
-                title: '내 첫 포트폴리오',
-                description: '리액트와 Tailwind로 만든 개인 프로젝트 쇼케이스',
-                thumbnailUrl: 'https://picsum.photos/seed/1/500/300',
-                createdAt: '2023-10-26',
-                category: '게임',
-            },
-            {
-                id: '2',
-                title: 'MBTI 심리 테스트',
-                description: '나의 진짜 MBTI 유형을 알아보는 심층 테스트',
-                thumbnailUrl: 'https://picsum.photos/seed/2/500/300',
-                createdAt: '2023-11-15',
-                category: 'MBTI',
-            },
-            {
-                id: '3',
-                title: '인디 게임 추천',
-                description: '숨겨진 명작 인디 게임들을 소개합니다.',
-                thumbnailUrl: 'https://picsum.photos/seed/3/500/300',
-                createdAt: '2024-01-08',
-                category: '게임',
-            },
-        ];
-        setWebsites(initialWebsites);
-    }, []);
+  // 주소 설정 (기존 유지)
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const basename = isLocal ? '/' : '/Max-verstappen/';
 
-    const handleAddWebsite = useCallback((title: string, description: string) => {
-        const newWebsite: Website = {
-            id: new Date().toISOString(),
-            title,
-            description,
-            thumbnailUrl: `https://picsum.photos/seed/${new Date().getTime()}/500/300`,
-            createdAt: new Date().toLocaleDateString('ko-KR'),
-            category: (websites.length + 1) % 2 === 0 ? 'MBTI' : '게임',
-        };
-        setWebsites(prevWebsites => [newWebsite, ...prevWebsites]);
-        setIsModalOpen(false);
-    }, [websites]);
+  useEffect(() => {
+    // 1단계: 2초 뒤에 "사라지기 시작해라(Fade Out)" 신호 보냄
+    const fadeTimer = setTimeout(() => {
+      setIsFading(true);
+    }, 2000);
 
-    const handleDeleteWebsite = useCallback((id: string) => {
-        setWebsites(prevWebsites => prevWebsites.filter(site => site.id !== id));
-    }, []);
+    // 2단계: 총 3초(2초 대기 + 1초 사라짐) 뒤에 스플래시 화면을 아예 없앰
+    const removeTimer = setTimeout(() => {
+      setShowSplash(false);
+    }, 3000);
 
-    const categories = ['전체', '게임', 'MBTI'];
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(removeTimer);
+    };
+  }, []);
 
-    const filteredWebsites =
-        selectedCategory === '전체'
-            ? websites
-            : websites.filter(site => site.category === selectedCategory);
+  return (
+    <>
+      {/* 스플래시 화면 (showSplash가 true일 때만 보임) */}
+      {showSplash && <SplashScreen isFading={isFading} />}
 
-    return (
-        <div className="min-h-screen flex flex-col text-slate-800 dark:text-slate-200 transition-colors duration-500">
-            <Header onAddWebsite={() => setIsModalOpen(true)} />
-            <main className="flex-grow p-4 sm:p-6 md:p-8">
-                <NavigationBar
-                    categories={categories}
-                    selectedCategory={selectedCategory}
-                    onSelectCategory={setSelectedCategory}
-                />
-                <WebsiteList websites={filteredWebsites} onDeleteWebsite={handleDeleteWebsite} />
-            </main>
-            <Footer />
-            <AddWebsiteModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                onAdd={handleAddWebsite}
-            />
-        </div>
-    );
-};
+      {/* 메인 앱 (스플래시 화면 뒤에 미리 그려져 있음) */}
+      <BrowserRouter basename={basename}>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Homepage />} />
+            <Route path="mypage" element={<MyPage />} />
+            <Route path="video" element={<IframePage />} />
+            <Route path="f1-movie" element={<F1MovieProfile />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </>
+  );
+}
 
 export default App;

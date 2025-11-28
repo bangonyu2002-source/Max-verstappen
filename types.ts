@@ -5,4 +5,5 @@ export interface Website {
   thumbnailUrl: string;
   createdAt: string;
   category: string;
+  path?: string;
 }

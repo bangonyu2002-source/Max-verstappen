@@ -1,5 +1,5 @@
 {
-  "homepage": "https://bangonyu2002-source.github.io/Max-verstappen",
+  "homepage": "https://bangonyu2002-source.github.io/Max-verstappen/",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,6 +11,8 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.87.1",
+    "@vercel/analytics": "^1.6.1",
     "gh-pages": "^6.3.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -19,6 +21,8 @@
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.0.0",
     "autoprefixer": "^10.4.22",
     "postcss": "^8.5.6",

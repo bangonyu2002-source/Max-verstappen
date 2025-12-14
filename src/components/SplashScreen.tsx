@@ -19,7 +19,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ isFading }) => {
       <div className="animate-bounce">
         <img
           // public 폴더 내에 있는 logo.svg 파일을 사용합니다.
-          src="/logo.svg" 
+          src="./logo.svg" 
           alt="My Website Logo"
           // 🚨 크기를 두 배(w-64 h-64, 256px x 256px)로 변경했습니다.
           className="w-64 h-64 object-contain filter shadow-blue-500/50" 

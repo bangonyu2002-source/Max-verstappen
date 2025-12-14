@@ -33,7 +33,7 @@ function App() {
       {showSplash && <SplashScreen isFading={isFading} />}
       
       {!showSplash && ( // 스플래시 끝나야 앱 시작
-        <BrowserRouter basename="/Max-verstappen/">
+        <BrowserRouter basename="/">
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             

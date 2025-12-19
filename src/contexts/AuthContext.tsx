@@ -1,4 +1,3 @@
-// src/contexts/AuthContext.tsx
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../supabase';
 
@@ -23,6 +22,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // 프로필 가져오기
   const fetchProfile = async (userId: string) => {
     try {
       const { data, error } = await supabase
@@ -30,35 +30,61 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         .select('*')
         .eq('id', userId)
         .single();
-      if (!error) setProfile(data);
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching profile:', error);
+      }
+      setProfile(data);
     } catch (err) {
       console.error(err);
     }
   };
 
   useEffect(() => {
+    let mounted = true;
+
+    // 1. 유저 상태 확인 함수
     const checkUser = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        setUser(session?.user ?? null);
-        if (session?.user) await fetchProfile(session.user.id);
+        
+        if (mounted) {
+          setUser(session?.user ?? null);
+          if (session?.user) {
+            await fetchProfile(session.user.id);
+          }
+        }
       } catch (error) {
-        console.error("Auth Check Error:", error);
+        console.error("Auth check failed:", error);
       } finally {
-        // ▼▼▼ [핵심] 성공하든 실패하든 무조건 로딩을 끝냄! ▼▼▼
-        setLoading(false);
+        if (mounted) setLoading(false); // 성공하든 실패하든 로딩 끝내기
       }
     };
+
     checkUser();
 
+    // 2. [안전장치] 혹시 3초가 지나도 로딩이 안 끝나면 강제로 끝냄
+    const safetyTimer = setTimeout(() => {
+        if (loading) {
+            console.warn("로딩 시간이 초과되어 강제로 종료합니다.");
+            setLoading(false);
+        }
+    }, 3000); 
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setUser(session?.user ?? null);
-      if (session?.user) await fetchProfile(session.user.id);
-      else setProfile(null);
-      setLoading(false);
+      if (mounted) {
+        setUser(session?.user ?? null);
+        if (session?.user) await fetchProfile(session.user.id);
+        else setProfile(null);
+        setLoading(false);
+      }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+      clearTimeout(safetyTimer); // 타이머 정리
+    };
   }, []);
 
   const signOut = async () => {

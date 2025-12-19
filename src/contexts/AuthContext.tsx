@@ -1,3 +1,4 @@
+// src/contexts/AuthContext.tsx
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../supabase';
 
@@ -22,7 +23,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // 프로필 데이터 가져오기
   const fetchProfile = async (userId: string) => {
     try {
       const { data, error } = await supabase
@@ -30,12 +30,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         .select('*')
         .eq('id', userId)
         .single();
-
-      if (error && error.code !== 'PGRST116') { // 데이터가 없는 에러는 무시
-        console.error('Error fetching profile:', error);
-      }
-      
-      setProfile(data); // 데이터가 없으면 null이 들어감 -> 'Unknown Driver' 표시됨
+      if (!error) setProfile(data);
     } catch (err) {
       console.error(err);
     }
@@ -43,22 +38,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        await fetchProfile(session.user.id);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setUser(session?.user ?? null);
+        if (session?.user) await fetchProfile(session.user.id);
+      } catch (error) {
+        console.error("Auth Check Error:", error);
+      } finally {
+        // ▼▼▼ [핵심] 성공하든 실패하든 무조건 로딩을 끝냄! ▼▼▼
+        setLoading(false);
       }
-      setLoading(false);
     };
     checkUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setUser(session?.user ?? null);
-      if (session?.user) {
-        await fetchProfile(session.user.id);
-      } else {
-        setProfile(null);
-      }
+      if (session?.user) await fetchProfile(session.user.id);
+      else setProfile(null);
       setLoading(false);
     });
 
@@ -71,26 +67,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
   };
 
-  // ▼▼▼ [핵심 수정] update -> upsert 로 변경! ▼▼▼
   const updateProfile = async (updates: Partial<Profile>) => {
     if (!user) return;
-
-    // "없으면 만들고(Insert), 있으면 수정(Update)해라" 라는 강력한 명령어입니다.
-    const { error } = await supabase
-      .from('profiles')
-      .upsert({
-        id: user.id,        // 누구인지(ID)는 필수!
-        email: user.email,  // 이메일도 확실하게 넣어줌
-        ...updates,         // 닉네임, 사진 변경사항 적용
-        updated_at: new Date() // 수정 시간 갱신
-      });
-
-    if (error) {
-        console.error("업데이트 실패 원인:", error); // 에러 확인용 로그
-        throw error;
-    }
-
-    // 성공하면 즉시 화면 갱신
+    const { error } = await supabase.from('profiles').upsert({
+      id: user.id,
+      email: user.email,
+      ...updates,
+      updated_at: new Date()
+    });
+    if (error) throw error;
     await fetchProfile(user.id);
   };
 

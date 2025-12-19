@@ -1,6 +1,6 @@
-import React, { useState, useEffect, JSX } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext'; // 방금 만든 파일
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Layout from './pages/Layout';
 import Homepage from './pages/Homepage';
 import MyPage from './pages/MyPage';
@@ -11,11 +11,11 @@ import SplashScreen from './components/SplashScreen';
 import { Analytics } from '@vercel/analytics/react';
 
 // 로그인 안 했으면 튕겨내는 컴포넌트
-const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
   if (loading) return null; // 로딩 중엔 아무것도 안 보여줌
   if (!user) return <Navigate to="/login" replace />;
-  return children;
+  return <>{children}</>;
 };
 
 function App() {
@@ -33,6 +33,10 @@ function App() {
       {showSplash && <SplashScreen isFading={isFading} />}
       
       {!showSplash && ( // 스플래시 끝나야 앱 시작
+        /* 
+           ▼▼▼ [중요] 배포 시 흰 화면 해결을 위해 "/"로 설정함 ▼▼▼ 
+           Vercel은 기본 경로(/)를 사용하므로 이 부분이 핵심입니다.
+        */
         <BrowserRouter basename="/">
           <Routes>
             <Route path="/login" element={<LoginPage />} />
@@ -47,7 +51,9 @@ function App() {
           </Routes>
         </BrowserRouter>
       )}
-    <Analytics />
+      
+      {/* 방문자 통계 (Analytics) */}
+      <Analytics />
     </AuthProvider>
   );
 }

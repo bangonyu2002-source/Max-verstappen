@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 // ▼ [데이터] 카테고리 정리 (MOVIE, F1 LEGEND, APP)
 const CONTENTS = [
   // 1. 영화 (MOVIE)
+ // 1. 영화 (MOVIE)
   {
     id: 'f1-movie-card',
     type: 'MOVIE',
@@ -13,18 +14,19 @@ const CONTENTS = [
     subtitle: 'Brad Pitt • 2025',
     img: './main poster.jpg',
     path: '/f1-movie',
-    size: 'large' // 2x2 크기
+    size: 'large'
   },
 
-  // 2. F1 레전드 선수들 (F1 LEGEND로 통일)
+  // 2. F1 레전드 선수들 (이제 클릭하면 /story 페이지로 이동합니다!)
   {
     id: 'Max verstappn',
     type: 'F1 LEGEND',
     title: 'MAX VERSTAPPEN',
     subtitle: 'Lion Unleashed',
     img: './verstappen.jpg',
-    path: './video?id=ZIsjp5cZ4N4',
-    size: 'tall' // 세로로 긴 카드
+    // ▼ [수정] 스토리 페이지로 연결 (나중에 drivers.ts에 max-verstappen 데이터 추가 필요)
+    path: '/story?id=max-verstappen', 
+    size: 'tall'
   },
   {
     id: 'Ayrton Senna',
@@ -32,7 +34,8 @@ const CONTENTS = [
     title: 'AYRTON SENNA',
     subtitle: 'Forever Champion',
     img: './senna.jpg',
-    path: './video?id=pMfOcNZOfvc',
+    // ▼ [수정] 스토리 페이지로 연결 (drivers.ts에 데이터 있음)
+    path: '/story?id=ayrton-senna',
     size: 'normal'
   },
   {
@@ -41,7 +44,8 @@ const CONTENTS = [
     title: 'LEWIS HAMILTON',
     subtitle: 'Still We Rise',
     img: './Hamilton.jpg',
-    path: './video?id=ehBkzd0cpb4',
+    // ▼ [수정] 스토리 페이지로 연결
+    path: '/story?id=lewis-hamilton',
     size: 'normal'
   },
   {
@@ -50,100 +54,9 @@ const CONTENTS = [
     title: 'MICHAEL SCHUMACHER',
     subtitle: 'The Red Baron',
     img: './Michael.jpg',
-    path: './video?id=CelApFIyy8A',
-    size: 'wide' // 가로로 긴 카드
-  },
-
-  // 3. 구글 AI 스튜디오 앱 10개 (APP) - 디자인을 위해 크기를 섞었습니다.
-  {
-    id: 'ai-app-1',
-    type: 'APP',
-    title: 'AI CHATBOT',
-    subtitle: 'Google Gemini Pro',
-    img: 'https://picsum.photos/seed/app1/600/400', // 임시 이미지
-    path: '#', // 실제 앱 링크로 바꾸세요
+    // ▼ [수정] 스토리 페이지로 연결 (drivers.ts에 데이터 있음)
+    path: '/story?id=michael-schumacher',
     size: 'wide'
-  },
-  {
-    id: 'ai-app-2',
-    type: 'APP',
-    title: 'IMAGE GENERATOR',
-    subtitle: 'Create Art with AI',
-    img: 'https://picsum.photos/seed/app2/400/400',
-    path: '#',
-    size: 'normal'
-  },
-  {
-    id: 'ai-app-3',
-    type: 'APP',
-    title: 'CODE ASSISTANT',
-    subtitle: 'Smart Coding Tool',
-    img: 'https://picsum.photos/seed/app3/400/800',
-    path: '#',
-    size: 'tall'
-  },
-  {
-    id: 'ai-app-4',
-    type: 'APP',
-    title: 'DATA ANALYZER',
-    subtitle: 'Visualize Insights',
-    img: 'https://picsum.photos/seed/app4/400/400',
-    path: '#',
-    size: 'normal'
-  },
-  {
-    id: 'ai-app-5',
-    type: 'APP',
-    title: 'TRANSLATOR PRO',
-    subtitle: 'Real-time Translation',
-    img: 'https://picsum.photos/seed/app5/400/400',
-    path: '#',
-    size: 'normal'
-  },
-  {
-    id: 'ai-app-6',
-    type: 'APP',
-    title: 'MUSIC COMPOSER',
-    subtitle: 'AI Beat Maker',
-    img: 'https://picsum.photos/seed/app6/600/400',
-    path: '#',
-    size: 'wide'
-  },
-  {
-    id: 'ai-app-7',
-    type: 'APP',
-    title: 'STORY WRITER',
-    subtitle: 'Creative Writing Aid',
-    img: 'https://picsum.photos/seed/app7/400/400',
-    path: '#',
-    size: 'normal'
-  },
-  {
-    id: 'ai-app-8',
-    type: 'APP',
-    title: 'VOICE CLONING',
-    subtitle: 'TTS Technology',
-    img: 'https://picsum.photos/seed/app8/400/400',
-    path: '#',
-    size: 'normal'
-  },
-  {
-    id: 'ai-app-9',
-    type: 'APP',
-    title: 'VIDEO EDITOR',
-    subtitle: 'Auto-Edit Clips',
-    img: 'https://picsum.photos/seed/app9/400/800',
-    path: '#',
-    size: 'tall'
-  },
-  {
-    id: 'ai-app-10',
-    type: 'APP',
-    title: 'GAME MAKER',
-    subtitle: 'No-Code Game Gen',
-    img: 'https://picsum.photos/seed/app10/400/400',
-    path: '#',
-    size: 'normal'
   },
 ];
 

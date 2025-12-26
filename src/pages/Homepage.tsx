@@ -3,10 +3,9 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 
-// ▼ [데이터] 카테고리 정리 (MOVIE, F1 LEGEND, APP)
+// ▼ [데이터] 카테고리 및 진열 순서 정의
 const CONTENTS = [
-  // 1. 영화 (MOVIE)
- // 1. 영화 (MOVIE)
+  // 1. 영화 (MOVIE) - 2x2
   {
     id: 'f1-movie-card',
     type: 'MOVIE',
@@ -17,14 +16,13 @@ const CONTENTS = [
     size: 'large'
   },
 
-  // 2. F1 레전드 선수들 (이제 클릭하면 /story 페이지로 이동합니다!)
+  // 2. F1 레전드 - Row 1 & 2 채움
   {
     id: 'Max verstappn',
     type: 'F1 LEGEND',
     title: 'MAX VERSTAPPEN',
     subtitle: 'Lion Unleashed',
     img: './verstappen.jpg',
-    // ▼ [수정] 스토리 페이지로 연결 (나중에 drivers.ts에 max-verstappen 데이터 추가 필요)
     path: '/story?id=max-verstappen', 
     size: 'tall'
   },
@@ -34,7 +32,6 @@ const CONTENTS = [
     title: 'AYRTON SENNA',
     subtitle: 'Forever Champion',
     img: './senna.jpg',
-    // ▼ [수정] 스토리 페이지로 연결 (drivers.ts에 데이터 있음)
     path: '/story?id=ayrton-senna',
     size: 'normal'
   },
@@ -44,52 +41,92 @@ const CONTENTS = [
     title: 'LEWIS HAMILTON',
     subtitle: 'Still We Rise',
     img: './Hamilton.jpg',
-    // ▼ [수정] 스토리 페이지로 연결
     path: '/story?id=lewis-hamilton',
     size: 'normal'
   },
+  
+  // Row 3
   {
     id: 'Michael Schumacher',
     type: 'F1 LEGEND',
     title: 'MICHAEL SCHUMACHER',
     subtitle: 'The Red Baron',
     img: './Michael.jpg',
-    // ▼ [수정] 스토리 페이지로 연결 (drivers.ts에 데이터 있음)
     path: '/story?id=michael-schumacher',
     size: 'wide'
   },
+  {
+    id: 'Adrian Newey',
+    type: 'ENGINEER',
+    title: 'ADRIAN NEWEY',
+    subtitle: 'The Wind Whisperer',
+    img: './ADRIAN.jpg', 
+    path: '/story?id=adrian-newey',
+    size: 'wide'
+  },
+
+  // ▼▼▼ [새로 추가된 부분] Row 4 ▼▼▼
+  {
+    id: 'Christian Horner',
+    type: 'DIRECTOR',
+    title: 'CHRISTIAN HORNER',
+    subtitle: 'Red Bull Team Principal',
+    img: './horner.jpg', // public에 horner.jpg 필요
+    path: '/story?id=christian-horner',
+    size: 'tall' // 세로로 길게 (1칸 차지)
+  },
+  {
+    id: 'Ross Brawn',
+    type: 'ENGINEER',
+    title: 'ROSS BRAWN',
+    subtitle: 'The Mastermind',
+    img: './brawn.jpg', // public에 brawn.jpg 필요
+    path: '/story?id=ross-brawn',
+    size: 'wide' // 가로로 길게 (2칸 차지)
+  },
+  {
+    id: 'Gordon Murray',
+    type: 'ENGINEER',
+    title: 'GORDON MURRAY',
+    subtitle: 'The Innovator',
+    img: './murray.jpg', // public에 murray.jpg 필요
+    path: '/story?id=gordon-murray',
+    size: 'normal' // 정사각형 (1칸 차지)
+  },
+  {
+    id: 'Rory Byrne',
+    type: 'ENGINEER',
+    title: 'RORY BYRNE',
+    subtitle: 'The Ferrari Architect',
+    img: './byrne.jpg', 
+    path: '/story?id=rory-byrne',
+    size: 'tall' // 세로로 길게 배치해서 디자인 균형 맞춤
+  }
 ];
 
 const Homepage: React.FC = () => {
   const { profile } = useAuth();
   
-  // 검색어 & 필터 상태 관리
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState('ALL');
 
-  // 필터링 로직
   const filteredContents = CONTENTS.filter((content) => {
     const matchesSearch = content.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           content.subtitle.toLowerCase().includes(searchTerm.toLowerCase());
-    // ALL이면 다 보여주고, 아니면 해당 타입만 보여줌
     const matchesFilter = activeFilter === 'ALL' || content.type === activeFilter;
     return matchesSearch && matchesFilter;
   });
 
-  // 카테고리 목록 (순서 고정을 위해 직접 지정)
-  const categories = ['ALL', 'MOVIE', 'F1 LEGEND', 'APP'];
+  const categories = ['ALL', 'MOVIE', 'F1 LEGEND', 'DIRECTOR', 'ENGINEER'];
 
   return (
     <div className="min-h-screen bg-[#050505] text-white selection:bg-red-600 selection:text-white pb-32 cursor-default">
       
-      {/* 배경 조명 효과 */}
       <div className="fixed inset-0 z-0 pointer-events-none flex items-center justify-center overflow-hidden">
          <div className="w-[800px] h-[800px] bg-red-600/10 rounded-full blur-[120px] opacity-20 animate-pulse"></div>
       </div>
-      {/* 노이즈 효과 (index.css에 .bg-noise가 있어야 함) */}
       <div className="bg-noise pointer-events-none fixed inset-0 z-50"></div>
 
-      {/* Hero Section */}
       <section className="relative px-6 pt-40 pb-10 max-w-[1600px] mx-auto z-10">
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
@@ -110,7 +147,6 @@ const Homepage: React.FC = () => {
                 </h1>
              </div>
             
-            {/* 검색창 */}
             <div className="flex items-center bg-white/5 border border-white/10 rounded-full px-4 py-3 backdrop-blur-md focus-within:border-red-500 transition-colors w-full md:w-80">
                 <span className="text-gray-400 mr-3">🔍</span>
                 <input 
@@ -123,7 +159,6 @@ const Homepage: React.FC = () => {
             </div>
           </div>
 
-          {/* 카테고리 필터 탭 */}
           <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide">
             {categories.map((cat) => (
                 <button
@@ -142,7 +177,6 @@ const Homepage: React.FC = () => {
         </motion.div>
       </section>
 
-      {/* Grid Section */}
       <section className="px-6 max-w-[1600px] mx-auto z-10 relative">
         <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-[350px]">
           
@@ -163,7 +197,6 @@ const Homepage: React.FC = () => {
                 >
                 <Link to={content.path} className="block w-full h-full">
                     
-                    {/* 이미지 */}
                     <div className="absolute inset-0 overflow-hidden">
                     <img 
                         src={content.img} 
@@ -173,11 +206,11 @@ const Homepage: React.FC = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90 group-hover:opacity-40 transition-opacity duration-500" />
                     </div>
 
-                    {/* 텍스트 내용 */}
                     <div className="absolute bottom-0 left-0 w-full p-8 flex flex-col justify-end h-full">
                     <div className="mb-auto">
                         <span className={`px-3 py-1 border border-white/20 rounded-full text-[10px] font-bold tracking-widest backdrop-blur-md uppercase 
-                            ${content.type === 'APP' ? 'text-blue-300 border-blue-500/30' : 'text-white/80'}
+                            ${content.type === 'DIRECTOR' ? 'text-yellow-400 border-yellow-500/30' : 
+                              content.type === 'ENGINEER' ? 'text-blue-300 border-blue-500/30' : 'text-white/80'}
                         `}>
                         {content.type}
                         </span>
@@ -188,12 +221,11 @@ const Homepage: React.FC = () => {
                         {content.title}
                         </h3>
                         <p className="text-gray-300 font-medium text-sm flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-                        <span className={`w-6 h-[2px] ${content.type === 'APP' ? 'bg-blue-500' : 'bg-red-600'}`}></span>
+                        <span className={`w-6 h-[2px] ${content.type === 'DIRECTOR' ? 'bg-yellow-500' : 'bg-red-600'}`}></span>
                         {content.subtitle}
                         </p>
                     </div>
 
-                    {/* 화살표 아이콘 */}
                     <div className="absolute bottom-8 right-8 w-12 h-12 rounded-full bg-white text-black flex items-center justify-center opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-200 shadow-lg">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                     </div>
@@ -203,7 +235,6 @@ const Homepage: React.FC = () => {
             ))}
           </AnimatePresence>
 
-          {/* 검색 결과 없음 처리 */}
           {filteredContents.length === 0 && (
              <div className="col-span-full text-center py-20 text-gray-500 font-mono">
                 No contents found matching "{searchTerm}"

@@ -65,33 +65,33 @@ const CONTENTS = [
     size: 'wide'
   },
 
-  // ▼▼▼ [새로 추가된 부분] Row 4 ▼▼▼
+  // Row 4
   {
     id: 'Christian Horner',
     type: 'DIRECTOR',
     title: 'CHRISTIAN HORNER',
     subtitle: 'Red Bull Team Principal',
-    img: './horner.jpg', // public에 horner.jpg 필요
+    img: './horner.jpg',
     path: '/story?id=christian-horner',
-    size: 'tall' // 세로로 길게 (1칸 차지)
+    size: 'tall'
   },
   {
     id: 'Ross Brawn',
     type: 'ENGINEER',
     title: 'ROSS BRAWN',
     subtitle: 'The Mastermind',
-    img: './brawn.jpg', // public에 brawn.jpg 필요
+    img: './brawn.jpg',
     path: '/story?id=ross-brawn',
-    size: 'wide' // 가로로 길게 (2칸 차지)
+    size: 'wide'
   },
   {
     id: 'Gordon Murray',
     type: 'ENGINEER',
     title: 'GORDON MURRAY',
     subtitle: 'The Innovator',
-    img: './murray.jpg', // public에 murray.jpg 필요
+    img: './murray.jpg',
     path: '/story?id=gordon-murray',
-    size: 'normal' // 정사각형 (1칸 차지)
+    size: 'normal'
   },
   {
     id: 'Rory Byrne',
@@ -100,7 +100,18 @@ const CONTENTS = [
     subtitle: 'The Ferrari Architect',
     img: './byrne.jpg', 
     path: '/story?id=rory-byrne',
-    size: 'tall' // 세로로 길게 배치해서 디자인 균형 맞춤
+    size: 'tall'
+  },
+
+  // ▼▼▼ [시험 미션] AI 카드 추가 ▼▼▼
+  {
+    id: 'ai-strategist',
+    type: 'AI',
+    title: 'MAX AI ANALYST',
+    subtitle: 'Gemini Strategy System',
+    img: './max.jpg', // 적절한 배경 이미지
+    path: '/ai-strategy',
+    size: 'normal'
   }
 ];
 
@@ -117,7 +128,8 @@ const Homepage: React.FC = () => {
     return matchesSearch && matchesFilter;
   });
 
-  const categories = ['ALL', 'MOVIE', 'F1 LEGEND', 'DIRECTOR', 'ENGINEER'];
+  // 'AI' 카테고리 추가
+  const categories = ['ALL', 'MOVIE', 'F1 LEGEND', 'DIRECTOR', 'ENGINEER', 'AI'];
 
   return (
     <div className="min-h-screen bg-[#050505] text-white selection:bg-red-600 selection:text-white pb-32 cursor-default">
@@ -210,7 +222,8 @@ const Homepage: React.FC = () => {
                     <div className="mb-auto">
                         <span className={`px-3 py-1 border border-white/20 rounded-full text-[10px] font-bold tracking-widest backdrop-blur-md uppercase 
                             ${content.type === 'DIRECTOR' ? 'text-yellow-400 border-yellow-500/30' : 
-                              content.type === 'ENGINEER' ? 'text-blue-300 border-blue-500/30' : 'text-white/80'}
+                              content.type === 'ENGINEER' ? 'text-blue-300 border-blue-500/30' : 
+                              content.type === 'AI' ? 'text-red-500 border-red-500/50 bg-red-500/10' : 'text-white/80'}
                         `}>
                         {content.type}
                         </span>

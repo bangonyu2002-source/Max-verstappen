@@ -118,7 +118,7 @@ const Homepage: React.FC = () => {
   });
 
   // 'AI' 카테고리 추가
-  const categories = ['ALL', 'MOVIE', 'F1 LEGEND', 'DIRECTOR', 'ENGINEER', 'AI'];
+  const categories = ['ALL', 'MOVIE', 'F1 LEGEND', 'DIRECTOR', 'ENGINEER'];
 
   return (
     <div className="min-h-screen bg-[#050505] text-white selection:bg-red-600 selection:text-white pb-32 cursor-default">

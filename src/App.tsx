@@ -12,7 +12,6 @@ import LocalAppPage from './pages/LocalAppPage';
 import DriverStoryPage from './pages/DriverStoryPage';
 import SplashScreen from './components/SplashScreen';
 import { Analytics } from '@vercel/analytics/react';
-import AIStrategyPage from "./pages/AIStrategyPage";
 // 로그인 안 했으면 튕겨내는 컴포넌트
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -57,7 +56,6 @@ function App() {
               <Route path="mypage" element={<MyPage />} />
               <Route path="video" element={<IframePage />} />
               <Route path="f1-movie" element={<F1MovieProfile />} />
-              <Route path="/ai-strategy" element={<AIStrategyPage />} />
               {/* ▼ [추가] 스토리 페이지 라우트 (/story) */}
               <Route path="story" element={<DriverStoryPage />} />
             </Route>

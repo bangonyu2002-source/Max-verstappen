@@ -102,17 +102,6 @@ const CONTENTS = [
     path: '/story?id=rory-byrne',
     size: 'tall'
   },
-
-  // ▼▼▼ [시험 미션] AI 카드 추가 ▼▼▼
-  {
-    id: 'ai-strategist',
-    type: 'AI',
-    title: 'MAX AI ANALYST',
-    subtitle: 'Gemini Strategy System',
-    img: './max.jpg', // 적절한 배경 이미지
-    path: '/ai-strategy',
-    size: 'normal'
-  }
 ];
 
 const Homepage: React.FC = () => {
